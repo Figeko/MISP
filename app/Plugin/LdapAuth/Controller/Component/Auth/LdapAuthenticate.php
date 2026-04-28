@@ -135,7 +135,7 @@ class LdapAuthenticate extends BaseAuthenticate
         if ($ldapUserMemberships) {
             $entries = ldap_get_entries($ldapconn, $ldapUserMemberships);
             foreach ($entries as $entry) {
-                if (is_array($entry) && isset($entry[0])) {
+                if (is_array($entry) && isset($entry['cn'][0])) {
                     $groups[] = $entry['cn'][0];
                 }
             }
