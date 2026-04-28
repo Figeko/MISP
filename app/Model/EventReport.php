@@ -1520,7 +1520,7 @@ class EventReport extends AppModel
             'errors' => [],
         ];
         if (!isset($picture['size'])) {
-            $saveResult['errors'][] = __('Picture has not size');
+            $saveResult['errors'][] = __('Picture has no size');
             return $saveResult;
         }
 

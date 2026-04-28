@@ -24,7 +24,7 @@ class Bruteforce extends AppModel
         $change = $this->UserLoginProfile->_getUserProfile();
         if ($this->isBlocklisted($username)) {
             $title .= ' Blocked against bruteforcing.';
-            $change['details'] = 'This has tripped the bruteforce protection after  ' . $amount . ' failed attempts. The source IP/username is now blocklisted for ' . $expire . ' seconds.';
+            $change['details'] = 'This has tripped the bruteforce protection after ' . $amount . ' failed attempts. The source IP/username is now blocklisted for ' . $expire . ' seconds.';
         }
         // lookup the real user details
         $this->User = ClassRegistry::init('User');
