@@ -48,6 +48,7 @@ class ProcessTool
     public static function execute(array $command, $cwd = null, $logToFile = false)
     {
         $descriptorSpec = [
+            0 => ['file', '/dev/null', 'r'], // stdin from /dev/null to prevent inheriting parent stdin
             1 => ['pipe', 'w'], // stdout
             2 => ['pipe', 'w'], // stderr
         ];
@@ -70,17 +71,22 @@ class ProcessTool
         }
         if (!$process) {
             $commandForException = self::commandFormat($command);
-            throw new Exception("Command '$commandForException' could be started.");
+            throw new Exception("Command '$commandForException' could not be started.");
         }
 
         $stdout = stream_get_contents($pipes[1]);
+        fclose($pipes[1]);
         if ($stdout === false) {
+            fclose($pipes[2]);
+            proc_close($process);
             $commandForException = self::commandFormat($command);
             throw new Exception("Could not get STDOUT of command '$commandForException'.");
         }
 
         $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
         if ($stderr === false) {
+            proc_close($process);
             $commandForException = self::commandFormat($command);
             throw new Exception("Could not get STDERR of command '$commandForException'.");
         }
