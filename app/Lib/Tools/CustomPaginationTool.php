@@ -27,8 +27,11 @@ class CustomPaginationTool
                 $params['options'][$v] = $options[$v];
             }
         }
-        $params['page'] = is_numeric($params['page']) ? $params['page'] : 1;
-        $params['limit'] = is_numeric($params['limit']) ? $params['limit'] : 60;
+        $params['page'] = is_numeric($params['page']) ? (int)$params['page'] : 1;
+        $params['limit'] = is_numeric($params['limit']) ? (int)$params['limit'] : 60;
+        if ($params['limit'] < 1) {
+            $params['limit'] = 60;
+        }
         $maxPage = floor($params['count'] / $params['limit']);
         if ($params['count'] % $params['limit'] != 0) {
             $maxPage += 1;
@@ -73,7 +76,7 @@ class CustomPaginationTool
                     $field_value = array($field_value);
                 }
                 foreach ($field_value as $v) {
-                    if (!is_array($v) && strpos(strtolower($v), $value) > -1) {
+                    if (!is_array($v) && strpos(strtolower($v), $value) !== false) {
                         $keep = true;
                     }
                 }

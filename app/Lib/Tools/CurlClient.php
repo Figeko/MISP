@@ -344,7 +344,10 @@ class CurlClient extends HttpSocketExtended
 
         if ($this->allowSelfSigned) {
             $options[CURLOPT_SSL_VERIFYPEER] = $this->verifyPeer;
-            $options[CURLOPT_SSL_VERIFYHOST] = 0;
+            // Keep hostname verification enabled (2) even when allowing self-signed certs.
+            // Setting CURLOPT_SSL_VERIFYHOST to 0 would disable hostname verification entirely,
+            // which is a security vulnerability. Self-signed certs can still have valid hostnames.
+            $options[CURLOPT_SSL_VERIFYHOST] = 2;
         }
 
         if (!empty($this->proxy)) {

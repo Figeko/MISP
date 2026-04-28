@@ -28,10 +28,13 @@ class SuricataRuleFormat
             if ($i === false) {
                 return -1;
             }
-            if ($options[$offset + $i - 1] == '\\') {
-                $offset += 2;
+            // $i is an absolute position. Check if the char immediately before is a backslash.
+            // If $i == 0 there is no preceding char, so it cannot be escaped.
+            if ($i > 0 && $options[$i - 1] === '\\') {
+                // Skip past this escaped semicolon and keep searching
+                $offset = $i + 1;
             } else {
-                return $offset + $i;
+                return $i;
             }
         }
     }

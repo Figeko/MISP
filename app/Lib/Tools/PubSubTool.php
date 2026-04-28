@@ -259,7 +259,11 @@ class PubSubTool
             }
 
             $this->saveSettingToFile($settings);
-            shell_exec(ProcessTool::pythonBin() . ' ' . APP . 'files' . DS . 'scripts' . DS . 'mispzmq' . DS . 'mispzmq.py >> ' . APP . 'tmp' . DS . 'logs' . DS . 'mispzmq.log 2>> ' . APP . 'tmp' . DS . 'logs' . DS . 'mispzmq.error.log &');
+            $pythonBin = escapeshellarg(ProcessTool::pythonBin());
+            $script = escapeshellarg(APP . 'files' . DS . 'scripts' . DS . 'mispzmq' . DS . 'mispzmq.py');
+            $logFile = escapeshellarg(APP . 'tmp' . DS . 'logs' . DS . 'mispzmq.log');
+            $errorLogFile = escapeshellarg(APP . 'tmp' . DS . 'logs' . DS . 'mispzmq.error.log');
+            shell_exec("$pythonBin $script >> $logFile 2>> $errorLogFile &");
         }
     }
 

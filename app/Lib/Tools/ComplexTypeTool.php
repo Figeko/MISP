@@ -598,7 +598,7 @@ class ComplexTypeTool
 
     private function __resolveFilename($param)
     {
-        if ((preg_match('/^.:/', $param) || strpos($param, '.') != 0)) {
+        if ((preg_match('/^.:/', $param) || strpos($param, '.') !== 0)) {
             $parts = explode('.', $param);
             if (!is_numeric(end($parts)) && ctype_alnum(end($parts))) {
                 return true;
