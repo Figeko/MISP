@@ -4539,8 +4539,8 @@ class Server extends AppModel
     private function getSubmoduleGitStatus($submoduleName, $superprojectSubmoduleCommitId)
     {
         $path = APP . '../' . $submoduleName;
-        $submoduleName = (strpos($submoduleName, '/') >= 0 ? explode('/', $submoduleName) : $submoduleName);
-        $submoduleName = end($submoduleName);
+        // Extract the last path component (e.g. "app/files/misp-galaxy" -> "misp-galaxy")
+        $submoduleName = basename($submoduleName);
 
         $submoduleCurrentCommitId = GitTool::currentCommit($path);
 
