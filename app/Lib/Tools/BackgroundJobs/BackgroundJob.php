@@ -71,6 +71,7 @@ class BackgroundJob implements JsonSerializable
     public function run(callable $runningCallback = null): void
     {
         $descriptorSpec = [
+            0 => ['file', '/dev/null', 'r'], // stdin from /dev/null to prevent inheriting parent stdin
             1 => ["pipe", "w"], // stdout
             2 => ["pipe", "w"], // stderr
         ];
@@ -91,7 +92,7 @@ class BackgroundJob implements JsonSerializable
 
         $this->pool($process, $pipes, $runningCallback);
 
-        if ($this->returnCode === 0 && empty($stderr)) {
+        if ($this->returnCode === 0 && empty($this->error)) {
             $this->setStatus(BackgroundJob::STATUS_COMPLETED);
             $this->setProgress(100);
         } else {
@@ -127,6 +128,9 @@ class BackgroundJob implements JsonSerializable
             $except = null;
 
             if (false === ($changedStreams = stream_select($read, $write, $except, 5))) {
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+                proc_close($process);
                 throw new RuntimeException("Could not select stream");
             } elseif ($changedStreams > 0) {
                 $this->output .= stream_get_contents($pipes[1]);
@@ -134,6 +138,9 @@ class BackgroundJob implements JsonSerializable
             }
             $status = proc_get_status($process);
             if ($status === false) {
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+                proc_close($process);
                 throw new RuntimeException("Could not get process status");
             }
             if ($runningCallback) {
